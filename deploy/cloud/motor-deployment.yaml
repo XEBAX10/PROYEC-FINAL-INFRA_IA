@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: motor
-          image: ghcr.io/OWNER/mancala-motor:VERSION
+          image: ghcr.io/xebax10/mancala-motor:latest
           ports:
             - containerPort: 8001
           envFrom:

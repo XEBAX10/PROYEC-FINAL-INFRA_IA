@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/OWNER/mancala-backend:VERSION
+          image: ghcr.io/xebax10/mancala-backend:latest
           ports:
             - containerPort: 8000
           env:

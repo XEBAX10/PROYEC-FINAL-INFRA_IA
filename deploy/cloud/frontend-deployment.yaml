@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/OWNER/mancala-frontend:VERSION
+          image: ghcr.io/xebax10/mancala-frontend:latest
           ports:
             - containerPort: 80
           resources:
