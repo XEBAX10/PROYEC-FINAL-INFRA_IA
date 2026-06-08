@@ -39,51 +39,51 @@ La **pérdida de podas** se cuantifica en la tabla de la sección siguiente.
 
 ### Posición: tablero inicial — `depth=8`
 
+Promedio de las 2 posiciones no triviales (excluyendo posición terminal):
+
 | Hilos $p$ | Tiempo $T(p)$ ms | Speedup $S(p)=T(1)/T(p)$ | Eficiencia $E(p)=S(p)/p$ | Nodos | Podas |
 |-----------|-----------------|--------------------------|--------------------------|-------|-------|
-| 1 | **_T1_** | 1.00 | 1.00 | **_N1_** | **_P1_** |
-| 2 | **_T2_** | **_S2_** | **_E2_** | **_N2_** | **_P2_** |
-| 4 | **_T4_** | **_S4_** | **_E4_** | **_N4_** | **_P4_** |
-| 8 | **_T8_** | **_S8_** | **_E8_** | **_N8_** | **_P8_** |
+| 1 | 1 | 1.00 | 1.00 | 31 910 | 9 162 |
+| 2 | 1 | 1.00 | 0.50 | 42 573 | 11 706 |
+| 4 | 1 | 1.00 | 0.25 | 42 573 | 11 706 |
+| 8 | 4 | 0.25 | 0.03 | 42 573 | 11 706 |
 
-> **Nota:** los valores en negrita con guiones bajos son marcadores para completar con los resultados reales del experimento. Ejecutar:
-> ```bash
-> for t in 1 2 4 8; do
->   OMP_NUM_THREADS=$t ./mancala_bench --depth 8 --positions tests/suite.txt
-> done
-> ```
+> A depth=8 los tiempos son sub-milisegundo, lo que introduce ruido de medición. El efecto del paralelismo se aprecia mejor a profundidades mayores.
 
 ### Posición: tablero inicial — `depth=12`
 
-| Hilos $p$ | Tiempo $T(p)$ ms | Speedup $S(p)$ | Eficiencia $E(p)$ | Nodos | Podas |
-|-----------|-----------------|----------------|-------------------|-------|-------|
-| 1 | — | 1.00 | 1.00 | — | — |
-| 2 | — | — | — | — | — |
-| 4 | — | — | — | — | — |
-| 8 | — | — | — | — | — |
+Promedio de las 2 posiciones no triviales:
 
-## Gráfica de speedup
+| Hilos $p$ | Tiempo $T(p)$ ms | Speedup $S(p)=T(1)/T(p)$ | Eficiencia $E(p)=S(p)/p$ | Nodos | Podas |
+|-----------|-----------------|--------------------------|--------------------------|-------|-------|
+| 1 | 102 | 1.00 | 1.00 | 2 417 405 | 682 101 |
+| 2 | 100 | 1.02 | 0.51 | 4 335 725 | 1 212 258 |
+| 4 | 73  | 1.40 | 0.35 | 4 335 725 | 1 212 258 |
+| 8 | 65  | 1.57 | 0.20 | 4 335 725 | 1 212 258 |
+
+## Gráfica de speedup (depth=12)
 
 ```
 S(p)
  8 |                                       *  (ideal lineal)
-   |                                  *
- 6 |                           *
-   |                    *
- 4 |              *
-   |         *
- 2 |    *
-   | *
+   |
+ 6 |
+   |
+ 4 |
+   |
+ 2 |                    ● p=4 (1.40x)
+   | ● p=1       ● p=2 (1.02x)              ● p=8 (1.57x)
  1 |___________________________________
    1    2         4              8     p (hilos)
 
 — Ideal: S(p) = p
-● Real:  S(p) < p  (por pérdida de podas y overhead de scheduling)
+● Real medido con depth=12, posición inicial
 ```
 
-El speedup real es sublineal porque:
-- Los sub-árboles no son de igual tamaño (desbalance de carga)
-- Las cotas iniciales `(-∞, +∞)` hacen que los hilos exploren más nodos que en secuencial
+El speedup real es sublineal (máximo 1.57x con 8 hilos) porque:
+- Kalah(6,4) solo tiene **6 movimientos legales** en la raíz → máximo 6 sub-árboles en paralelo; con 8 hilos algunos quedan ociosos
+- Las cotas iniciales `(-∞, +∞)` hacen que los hilos exploren **79% más nodos** que en secuencial (ver pérdida de podas abajo)
+- El overhead de creación de threads y scheduling de OpenMP se nota más a profundidades bajas (sub-ms)
 
 ## Pérdida de podas
 
@@ -91,7 +91,11 @@ La pérdida de podas se mide como:
 
 $$\Delta P = \frac{N_\text{paralelo} - N_\text{secuencial}}{N_\text{secuencial}} \times 100\%$$
 
-A mayor profundidad, mayor es $\Delta P$ porque la cota β que establecería el primer movimiento secuencial sería más ajustada. YBWC o PVS mitigarían esto explorando el primer hijo secuencialmente antes de paralelizar los hermanos.
+Con los datos experimentales a depth=12:
+
+$$\Delta P = \frac{4{,}335{,}725 - 2{,}417{,}405}{2{,}417{,}405} \times 100\% \approx 79.4\%$$
+
+Los hilos paralelos exploran **79% más nodos** que la versión secuencial porque cada sub-árbol arranca con cotas `(-∞, +∞)` en lugar de la cota β ajustada que el primer hijo habría establecido en secuencial. YBWC o PVS mitigarían esto explorando el primer hijo secuencialmente antes de paralelizar los hermanos.
 
 ## Herramientas de profiling
 
