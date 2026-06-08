@@ -29,6 +29,9 @@ WORKDIR /app
 COPY --from=builder /build/build/mancala_server .
 COPY --from=builder /build/build/mancala_bench  .
 COPY --from=builder /build/tests/suite.txt       tests/
+# Ensure libstdc++ matches the compiler version used at build time
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libstdc++.so.6* /usr/lib/x86_64-linux-gnu/
+RUN ldconfig
 
 ENV MOTOR_PORT=8001
 ENV OMP_NUM_THREADS=4
