@@ -1,0 +1,39 @@
+# C++ build artifacts
+motor/build/
+motor/_deps/
+*.o
+*.a
+*.so
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# Node (if used)
+node_modules/
+.next/
+
+# Docker
+*.tar
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/

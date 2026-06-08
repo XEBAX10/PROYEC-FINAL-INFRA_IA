@@ -1,0 +1,71 @@
+name: CI — Build, Test & SonarQube
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  motor-build-test:
+    name: Motor C++ — Build & Unit Tests
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OpenMP & CMake
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake libgomp1 gcc g++
+
+      - name: Configure CMake
+        working-directory: motor
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build all targets
+        working-directory: motor
+        run: cmake --build build --parallel 4 --target mancala_server mancala_bench test_board
+
+      - name: Run unit tests
+        working-directory: motor/build
+        run: ctest --output-on-failure
+
+      - name: Benchmark (depth=6, threads=1 and 4)
+        working-directory: motor
+        run: |
+          OMP_NUM_THREADS=1 ./build/mancala_bench --depth 6 --positions tests/suite.txt
+          OMP_NUM_THREADS=4 ./build/mancala_bench --depth 6 --positions tests/suite.txt
+
+  backend-test:
+    name: Backend Python — Tests
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        working-directory: backend
+        run: pytest tests/ -v
+
+  sonarqube:
+    name: SonarQube Scan
+    runs-on: ubuntu-22.04
+    needs: [motor-build-test, backend-test]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

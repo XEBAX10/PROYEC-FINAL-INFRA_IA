@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: motor
+  namespace: mancala
+  labels:
+    app: motor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: motor
+  template:
+    metadata:
+      labels:
+        app: motor
+    spec:
+      containers:
+        - name: motor
+          image: ghcr.io/OWNER/mancala-motor:VERSION
+          ports:
+            - containerPort: 8001
+          envFrom:
+            - configMapRef:
+                name: mancala-config
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "512Mi"
+            limits:
+              cpu: "4000m"
+              memory: "1Gi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8001
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: motor-svc
+  namespace: mancala
+spec:
+  selector:
+    app: motor
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
+  type: ClusterIP

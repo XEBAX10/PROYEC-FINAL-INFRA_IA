@@ -1,0 +1,147 @@
+:root {
+  --brown:   #7b4f2e;
+  --sand:    #f5deb3;
+  --green:   #4caf50;
+  --red:     #e53935;
+  --blue:    #1976d2;
+  --pit-bg:  #a0522d;
+  --kalaha-bg: #5d3316;
+  --text:    #2c1a0e;
+  --highlight: #ffe082;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f0e8d0;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  background: var(--brown);
+  color: white;
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
+}
+header h1 { font-size: 1.8rem; }
+.subtitle  { font-size: 0.9rem; opacity: 0.8; margin-top: 0.25rem; }
+
+main { width: 100%; max-width: 900px; padding: 1.5rem; }
+
+/* ── Controls ── */
+.controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.controls label { display: flex; gap: 0.4rem; align-items: center; font-size: 0.9rem; }
+.controls input, .controls select {
+  border: 1px solid #ccc; border-radius: 4px; padding: 0.3rem 0.5rem;
+}
+#btn-new {
+  background: var(--green); color: white;
+  border: none; border-radius: 6px;
+  padding: 0.5rem 1.2rem; cursor: pointer; font-size: 0.95rem;
+}
+#btn-new:hover { background: #388e3c; }
+
+/* ── Board ── */
+.board-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--brown);
+  border-radius: 16px;
+  padding: 1.2rem 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.kalaha {
+  background: var(--kalaha-bg);
+  border-radius: 50px;
+  width: 80px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  gap: 0.5rem;
+}
+.kalaha-label  { font-size: 0.8rem; opacity: 0.7; }
+.kalaha-count  { font-size: 2rem; font-weight: bold; }
+
+.pits-grid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pits-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.pit {
+  background: var(--pit-bg);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: 3px solid transparent;
+  transition: transform 0.15s, border-color 0.15s;
+  user-select: none;
+  position: relative;
+}
+.pit .pit-label {
+  font-size: 0.65rem;
+  opacity: 0.6;
+  position: absolute;
+  bottom: 6px;
+}
+.pit.clickable {
+  cursor: pointer;
+  border-color: var(--highlight);
+}
+.pit.clickable:hover {
+  transform: scale(1.1);
+  border-color: #ffd700;
+}
+.pit.empty { opacity: 0.4; }
+
+/* ── Status ── */
+.status-bar {
+  margin-top: 1.2rem;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+}
+#status   { font-size: 1.1rem; font-weight: 500; }
+.ai-info  { font-size: 0.85rem; color: #666; margin-top: 0.4rem; }
+
+.thinking { color: var(--blue); }
+.winner   { color: var(--green); font-weight: bold; }
+.error    { color: var(--red); }

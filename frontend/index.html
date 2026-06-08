@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mancala Kalah(6,4)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Mancala — Kalah(6,4)</h1>
+    <p class="subtitle">Universidad del Valle · IA + Infraestructuras Paralelas</p>
+  </header>
+
+  <main>
+    <!-- Controls -->
+    <section class="controls">
+      <label>
+        Profundidad IA:
+        <input id="depth" type="number" min="1" max="16" value="8" />
+      </label>
+      <label>
+        Hilos OpenMP:
+        <select id="threads">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="4" selected>4</option>
+          <option value="8">8</option>
+        </select>
+      </label>
+      <label>
+        Jugas como:
+        <select id="human-side">
+          <option value="0" selected>P0 (sur)</option>
+          <option value="1">P1 (norte)</option>
+        </select>
+      </label>
+      <button id="btn-new" onclick="newGame()">Nueva partida</button>
+    </section>
+
+    <!-- Board -->
+    <section class="board-wrapper">
+      <!-- P1 kalaha (left) -->
+      <div class="kalaha" id="k1">
+        <span class="kalaha-label">K1</span>
+        <span class="kalaha-count" id="k1-count">0</span>
+      </div>
+
+      <!-- Pits grid -->
+      <div class="pits-grid">
+        <!-- P1 row (shown reversed: pit12..pit7) -->
+        <div class="pits-row" id="row-p1"></div>
+        <!-- P0 row (pit0..pit5) -->
+        <div class="pits-row" id="row-p0"></div>
+      </div>
+
+      <!-- P0 kalaha (right) -->
+      <div class="kalaha" id="k0">
+        <span class="kalaha-label">K0</span>
+        <span class="kalaha-count" id="k0-count">0</span>
+      </div>
+    </section>
+
+    <!-- Status -->
+    <section class="status-bar">
+      <p id="status">Presiona "Nueva partida" para comenzar.</p>
+      <p id="ai-info" class="ai-info"></p>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
