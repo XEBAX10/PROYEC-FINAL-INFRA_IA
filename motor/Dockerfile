@@ -16,11 +16,13 @@ RUN cmake -B build -DCMAKE_BUILD_TYPE=Release && \
 RUN cd build && ctest --output-on-failure
 
 # ── Runtime image ──────────────────────────────────────────────────────────────
-FROM debian:bookworm-slim
+# Use gcc:13 base to guarantee libstdc++ version compatibility
+FROM gcc:13
 
 RUN apt-get update && apt-get install -y \
     libgomp1 \
     ca-certificates \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -36,4 +38,5 @@ EXPOSE 8001
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
     CMD curl -f http://localhost:8001/healthz || exit 1
 
+# cache-bust: 2026-06-08
 CMD ["./mancala_server"]
