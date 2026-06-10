@@ -11,7 +11,7 @@
 | Sebastian Barco | 2380599 | sebastian.barco@correounivalle.edu.co |
 | Santiago Montoya | 2380372 | Santiago.mayor@correounivalle.edu.co |
 | Laura Rivera | 2380712 | Laura.rivera.arias@correounivalle.edu.co |
-| (Completar) | (Código) | (Correo) |
+
 
 ## Descripción
 
