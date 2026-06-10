@@ -95,27 +95,28 @@ kubectl get deployment backend -n mancala
 
 ## Evidencia de despliegue en nube
 
+**URL pública:** http://35.202.56.120
+
+**Clúster:** `mancala-cluster` — GKE, zona `us-central1-a`, proyecto `mancala-uvalle-2026`  
+**Nodos:** 2 × `e2-small` (2 vCPU, 2 GB RAM c/u)
+
 ```bash
 kubectl get pods,svc,deploy -n mancala
 ```
 
-*(Incluir captura de pantalla de la salida real aquí)*
-
 ```
-NAME                            READY   STATUS    RESTARTS
-pod/motor-xxx-yyy               1/1     Running   0
-pod/backend-xxx-aaa             1/1     Running   0
-pod/backend-xxx-bbb             1/1     Running   0
-pod/backend-xxx-ccc             1/1     Running   0
-pod/frontend-xxx-zzz            1/1     Running   0
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/backend-6c4d55959c-mdhw5    1/1     Running   0          40h
+pod/frontend-7dd766fc74-6jp7v   1/1     Running   0          40h
+pod/motor-7458d8fc97-z4hsc      1/1     Running   0          10m
 
-NAME                  TYPE           CLUSTER-IP     EXTERNAL-IP
-service/motor-svc     ClusterIP      10.0.x.x       <none>
-service/backend-svc   ClusterIP      10.0.x.x       <none>
-service/frontend-svc  LoadBalancer   10.0.x.x       <IP_PUBLICA>
+NAME                  TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)
+service/backend-svc   ClusterIP      34.118.x.x       <none>           8000/TCP
+service/frontend-svc  LoadBalancer   34.118.227.14    35.202.56.120    80:31117/TCP
+service/motor-svc     ClusterIP      34.118.x.x       <none>           8001/TCP
 
 NAME                       READY   UP-TO-DATE   AVAILABLE
-deployment.apps/motor      1/1     1            1
-deployment.apps/backend    3/3     3            3
+deployment.apps/backend    1/1     1            1
 deployment.apps/frontend   1/1     1            1
+deployment.apps/motor      1/1     1            1
 ```
