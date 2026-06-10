@@ -7,4 +7,4 @@ data:
   OMP_NUM_THREADS: "2"
   DEFAULT_DEPTH: "8"
   MOTOR_PORT: "8001"
-  CORS_ORIGINS: "https://mancala.YOURDOMAIN.cloud,http://frontend-svc"
+  CORS_ORIGINS: "http://35.202.56.120,http://frontend-svc,http://frontend"
