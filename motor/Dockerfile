@@ -16,11 +16,12 @@ RUN cmake -B build -DCMAKE_BUILD_TYPE=Release && \
 RUN cd build && ctest --output-on-failure
 
 # ── Runtime image ──────────────────────────────────────────────────────────────
-# Use gcc:13 base to guarantee libstdc++ version compatibility
-FROM gcc:13
+# Ubuntu 24.04 ships with GCC 13 / libstdc++6 that includes GLIBCXX_3.4.32
+FROM ubuntu:24.04
 
 RUN apt-get update && apt-get install -y \
     libgomp1 \
+    libstdc++6 \
     ca-certificates \
     curl \
     && rm -rf /var/lib/apt/lists/*
@@ -29,9 +30,6 @@ WORKDIR /app
 COPY --from=builder /build/build/mancala_server .
 COPY --from=builder /build/build/mancala_bench  .
 COPY --from=builder /build/tests/suite.txt       tests/
-# Ensure libstdc++ matches the compiler version used at build time
-COPY --from=builder /usr/lib/x86_64-linux-gnu/libstdc++.so.6* /usr/lib/x86_64-linux-gnu/
-RUN ldconfig
 
 ENV MOTOR_PORT=8001
 ENV OMP_NUM_THREADS=4
